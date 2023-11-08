@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 app.use(cors());
 app.use(express.json());
@@ -39,19 +39,81 @@ const database= client.db('onlineStudyDB');
 const assignmentCollections= database.collection('assignments');
 
 //Get api
-//get assignments
+//get all assignments
 app.get('/assignments', async(req, res)=>{
-    const result= await assignmentCollections.find().toArray();
-    res.send(result);
+    try{
+        const result= await assignmentCollections.find().toArray();
+        res.send(result);
+    }
+    catch(error){
+        console.log(error);
+    }
 })
+//get single assignment
+app.get('/assignment/:id', async(req, res) => {
+    try{
+        const id=req.params.id;
+        const query= {_id: new ObjectId(id)}
+        const result= await assignmentCollections.findOne(query);
+        res.send(result);
+    }
+    catch(error){
+        console.log(error);
+    }
+})
+
 
 //Post api
 //post assignments
 app.post('/assignments', async (req, res) =>{
-    const body=req.body;
-    const result= await assignmentCollections.insertOne(body);
-    res.send(result);
-    // console.log(body);
+    try{
+        const body=req.body;
+        const result= await assignmentCollections.insertOne(body);
+        res.send(result);
+    }
+    catch(error){
+        console.log(error);
+    }
+})
+
+//Put/Patch api
+//put assignment
+app.put('/assignment/:id', async (req, res) => {
+    try{
+        const id= req.params.id;
+        const assignment= req.body;
+        const filter= {_id: new ObjectId(id)};
+        const options={upsert: true};
+        const updatedAssignment={
+            $set:{
+                title: assignment.title,
+                difficulty: assignment.difficulty,
+                marks: assignment.marks,
+                photo: assignment.photo,
+                description: assignment.description,
+                dueDate: assignment.dueDate,
+            }
+        }
+        const result= await assignmentCollections.updateOne(filter, updatedAssignment, options);
+        res.send(result);
+    }
+    catch(error){
+        console.log(error);
+    }
+})
+
+//Delete api
+//delete assignment
+app.delete(`/assignment/:id`,async(req,res)=>{
+    try{
+        const id= req.params.id;
+        const filter= {_id: new ObjectId(id)};
+        const result= await assignmentCollections.deleteOne(filter);
+        res.send(result);
+    }
+    catch(error){
+        console.log(error);
+    }
 })
 
 
