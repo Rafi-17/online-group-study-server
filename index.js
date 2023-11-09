@@ -160,10 +160,11 @@ app.patch('/submittedAssignment/:id', async(req, res) =>{
     const submittedAssignment= req.body;
     // console.log(booking);
     const updatedAssignment={
+        //setting status, obtainedmark and feedback
         $set:{
             status: submittedAssignment.status,
             obtainedMark:submittedAssignment.obtainedMark,
-            feedback:submittedAssignment.feedback
+            feedback:submittedAssignment.feedback 
         }
     }
     const result= await submittedAssignmentCollections.updateOne(filter, updatedAssignment);
