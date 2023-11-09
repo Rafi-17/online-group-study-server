@@ -62,6 +62,45 @@ app.get('/assignment/:id', async(req, res) => {
         console.log(error);
     }
 })
+//get submitted assignment
+app.get('/submittedAssignments', async(req, res)=>{
+    try{
+        let query={};
+        if(req.query?.status){
+            query={status: req.query.status}
+        }
+        const result= await submittedAssignmentCollections.find(query).toArray();
+        res.send(result);
+    }
+    catch(error){
+        console.log(error);
+    }
+})
+app.get('/submittedAssignments', async(req, res)=>{
+    try{
+        let query1={};
+        if(req.query?.email){
+            query1={email: req.query.email}
+        }
+        const result= await submittedAssignmentCollections.find(query1).toArray();
+        res.send(result);
+    }
+    catch(error){
+        console.log(error);
+    }
+})
+//get single submitted assignment
+app.get('/submittedAssignment/:id', async(req, res) => {
+    try{
+        const id=req.params.id;
+        const query= {_id: new ObjectId(id)}
+        const result= await submittedAssignmentCollections.findOne(query);
+        res.send(result);
+    }
+    catch(error){
+        console.log(error);
+    }
+})
 
 
 //Post api
@@ -70,6 +109,18 @@ app.post('/assignments', async (req, res) =>{
     try{
         const body=req.body;
         const result= await assignmentCollections.insertOne(body);
+        res.send(result);
+    }
+    catch(error){
+        console.log(error);
+    }
+})
+
+//post submitted assignment
+app.post('/submittedAssignments', async(req, res) => {
+    try{
+        const body=req.body;
+        const result= await submittedAssignmentCollections.insertOne(body);
         res.send(result);
     }
     catch(error){
@@ -101,6 +152,20 @@ app.put('/assignment/:id', async (req, res) => {
     catch(error){
         console.log(error);
     }
+})
+//patch submitted assignment status
+app.patch('/submittedAssignment/:id', async(req, res) =>{
+    const id= req.params.id;
+    const filter= {_id: new ObjectId(id)};
+    const submittedAssignment= req.body;
+    // console.log(booking);
+    const updatedAssignment={
+        $set:{
+            status: submittedAssignment.status
+        }
+    }
+    const result= await submittedAssignmentCollections.updateOne(filter, updatedAssignment);
+    res.send(result);
 })
 
 //Delete api
