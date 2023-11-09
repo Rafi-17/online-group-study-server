@@ -37,6 +37,7 @@ run().catch(console.dir);
 //database and collections
 const database= client.db('onlineStudyDB');
 const assignmentCollections= database.collection('assignments');
+const submittedAssignmentCollections= database.collection('submittedAssignments');
 
 //Get api
 //get all assignments
