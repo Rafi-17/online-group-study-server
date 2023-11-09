@@ -76,13 +76,13 @@ app.get('/submittedAssignments', async(req, res)=>{
         console.log(error);
     }
 })
-app.get('/submittedAssignments', async(req, res)=>{
+app.get('/submittedAssignment', async(req, res)=>{
     try{
-        let query1={};
+        let query={};
         if(req.query?.email){
-            query1={email: req.query.email}
+            query={email: req.query.email}
         }
-        const result= await submittedAssignmentCollections.find(query1).toArray();
+        const result= await submittedAssignmentCollections.find(query).toArray();
         res.send(result);
     }
     catch(error){
@@ -161,7 +161,9 @@ app.patch('/submittedAssignment/:id', async(req, res) =>{
     // console.log(booking);
     const updatedAssignment={
         $set:{
-            status: submittedAssignment.status
+            status: submittedAssignment.status,
+            obtainedMark:submittedAssignment.obtainedMark,
+            feedback:submittedAssignment.feedback
         }
     }
     const result= await submittedAssignmentCollections.updateOne(filter, updatedAssignment);
